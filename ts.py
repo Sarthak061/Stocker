@@ -9,10 +9,9 @@ from preprocess import preprocessing
 import warnings
 warnings.filterwarnings("ignore")
 
-"# Stock Price Prediction"
+"#Stocker"
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
-"The Github repository of the app is available [here](https://github.com/shrddha-p-jain/Stock-Price-Prediction-App).Feel free to contact me on [LinkedIn](https://www.linkedin.com/in/shraddha-p-jain/)\
-        or via [e-mail](mailto:shrddhapjain@gmail.com)."
+"Contact us via [e-mail](incstocker@gmail.com)."
 
 db = sq.connect('stocks.db')
 
