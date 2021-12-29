@@ -13,7 +13,10 @@ warnings.filterwarnings("ignore")
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
 "Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn]()."
 db = sq.connect('stocks.db')
+from PIL import Image
+image = Image.open('Stocker-logos_black.png')
 
+st.image(image, output_format= 'PNG')
 # get country
 query = "SELECT DISTINCT(Country) FROM tkrinfo;"
 country = pd.read_sql_query(query, db)
