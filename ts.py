@@ -1,4 +1,4 @@
-with open("style.css") as f:
+with open("Style.css") as f:
     st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
 
 image = Image.open("Stocker-logos_black.png")
