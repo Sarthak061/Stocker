@@ -1,3 +1,24 @@
+with open("style.css") as f:
+    st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
+
+image = Image.open("Stocker-logos_black.png")
+
+st.write("hello world")
+st.image(image, width = 150)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import streamlit as st
 import pandas as pd
 import sqlite3 as sq
