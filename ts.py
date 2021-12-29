@@ -9,16 +9,16 @@ from preprocess import preprocessing
 import warnings
 warnings.filterwarnings("ignore")
 from PIL import Image
-col1, col2, col3 = st.beta_columns([1,6,1])
+c1, c2, c3 = st.columns([1,6,1])
 
-with col1:
+with c1:
     st.write("")
 
-with col2:
+with c2:
     image = Image.open('Stocker-logos_black.png')
     st.image(image, output_format="PNG", width="100")
 
-with col3:
+with c3:
     st.write("")
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
 "Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn]()."
