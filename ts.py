@@ -1,3 +1,24 @@
+import streamlit as st
+import pandas as pd
+import sqlite3 as sq
+import datetime
+import yfinance as yf
+from preprocess import preprocessing
+#import matplotlib as mpl
+#import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings("ignore")
+from PIL import Image
+#image = Image.open('Stocker-logos_black.png')
+
+
+
+
+
+
+
+
+
 with open("Style.css") as f:
     st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
 
@@ -19,20 +40,7 @@ st.image(image, width = 150)
 
 
 
-import streamlit as st
-import pandas as pd
-import sqlite3 as sq
-import datetime
-import yfinance as yf
-from preprocess import preprocessing
-#import matplotlib as mpl
-#import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings("ignore")
-from PIL import Image
-image = Image.open('Stocker-logos_black.png')
-
-st.image(image, output_format= 'PNG', width = 150)
+#st.image(image, output_format= 'PNG', width = 150)
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
 "Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn]()."
 db = sq.connect('stocks.db')
