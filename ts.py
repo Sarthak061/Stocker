@@ -6,13 +6,14 @@ import yfinance as yf
 from preprocess import preprocessing
 #import matplotlib as mpl
 #import matplotlib.pyplot as plt
+from PIL import image
 import warnings
 warnings.filterwarnings("ignore")
 
-"#Stocker"
+"Stocker"
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
-"Contact us via [e-mail](incstocker@gmail.com)."
-
+"Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn]()."
+myimage = image.insert(Stocker-logos_black.png)
 db = sq.connect('stocks.db')
 
 # get country
