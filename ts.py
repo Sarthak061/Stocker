@@ -16,7 +16,7 @@ db = sq.connect('stocks.db')
 from PIL import Image
 image = Image.open('Stocker-logos_black.png')
 
-st.image(image, output_format= 'PNG')
+st.image(image, output_format= 'PNG', width = 150)
 # get country
 query = "SELECT DISTINCT(Country) FROM tkrinfo;"
 country = pd.read_sql_query(query, db)
