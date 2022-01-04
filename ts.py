@@ -235,3 +235,4 @@ else:
             st.write("SMAPE of Low : {}".format(smape_low))
 
 db.close()
+"to download data click [Here]()"
