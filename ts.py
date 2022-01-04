@@ -49,6 +49,18 @@ ticker_name = ticker_name.loc[0][0]
 #st.write(end_date)
 #st.write(str(ticker_name))
 
+
+
+
+
+start = "2010-01-01"
+end = '2021-31-12'
+yf.download(choice_name,start,end)
+
+
+
+
+
 # get interval
 interval = st.sidebar.selectbox("Interval", ['1d', '1wk', '1mo', '3mo'])
 
@@ -233,6 +245,5 @@ else:
             st.write("SMAPE of High: {}".format(smape_high))
         with col2:
             st.write("SMAPE of Low : {}".format(smape_low))
-
 db.close()
-"to download data click [Here]()"
+
