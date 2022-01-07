@@ -13,7 +13,7 @@ st.title("STOCKER")
 image = Image.open("Stocker-logos_black.png")
 st.image(image, width=150)
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
-"Contact me via [e-mail](incstocker@gmail.com) or [LinkedIn](https://www.linkedin.com/in/sarthak-sharma-7546a9223/)."
+"Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn](https://www.linkedin.com/in/sarthak-sharma-7546a9223/)."
 db = sq.connect('stocks.db')
 
 # get country
@@ -48,11 +48,6 @@ ticker_name = ticker_name.loc[0][0]
 #end_date = st.sidebar.date_input("End Date", value=datetime.date.today())
 #st.write(end_date)
 #st.write(str(ticker_name))
-
-# start = "2010-01-01"
-# end = '2021-31-12'
-# yf.download(choice_name,start,end)
-
 
 # get interval
 interval = st.sidebar.selectbox("Interval", ['1d', '1wk', '1mo', '3mo'])
@@ -238,5 +233,5 @@ else:
             st.write("SMAPE of High: {}".format(smape_high))
         with col2:
             st.write("SMAPE of Low : {}".format(smape_low))
-db.close()
 
+db.close()
