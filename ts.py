@@ -9,35 +9,38 @@ from preprocess import preprocessing
 import warnings
 warnings.filterwarnings("ignore")
 from PIL import Image
-st.title("STOCKER")
-image = Image.open("Stocker-logos_black.png")
-st.image(image, width=150)
+
+
+st.title('STOCKER')
+logo = Image.open("Stocker-logos_black.png")
+st.image(logo, width=150)
+
 "This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
 "Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn](https://www.linkedin.com/in/sarthak-sharma-7546a9223/)."
 db = sq.connect('stocks.db')
 
 # get country
-query = "SELECT DISTINCT(Country) FROM tkrinfo;"
-country = pd.read_sql_query(query, db)
-choice_country = st.sidebar.selectbox("Pick country", country)
+qry = "SELECT DISTINCT(Country) FROM tkrinfo;"
+count = pd.read_sql_query(qry, db)
+country_select = st.sidebar.selectbox("Select country", count)
 
 # get exchange
-query = "SELECT DISTINCT(Exchange) FROM tkrinfo WHERE Country = '" + choice_country + "'"
-exchange = pd.read_sql_query(query, db)
-choice_exchange = st.sidebar.selectbox("Pick exchange", exchange, index = 1)
+qry = "SELECT DISTINCT(Exchange) FROM tkrinfo WHERE Country = '" + country_select + "'"
+exchange = pd.read_sql_query(qry, db)
+exchange_select = st.sidebar.selectbox("Select exchange", exchange, index = 1)
 
 # get stock name
-query = "SELECT DISTINCT(Name) FROM tkrinfo WHERE Exchange = '" + choice_exchange + "'"
-name = pd.read_sql_query(query, db)
-choice_name = st.sidebar.selectbox("Pick the Stock", name)
+qry = "SELECT DISTINCT(Name) FROM tkrinfo WHERE Exchange = '" + exchange_select + "'"
+name = pd.read_sql_query(qry, db)
+choice_name = st.sidebar.selectbox("Select the Stock", name)
 
 # get stock tickr
-query = "SELECT DISTINCT(Ticker) FROM tkrinfo WHERE Exchange = '" + choice_exchange + "'" + "and Name = '" + choice_name + "'"
-ticker_name = pd.read_sql_query(query, db)
-ticker_name = ticker_name.loc[0][0]
+qry = "SELECT DISTINCT(Ticker) FROM tkrinfo WHERE Exchange = '" + exchange_select + "'" + "and Name = '" + choice_name + "'"
+tckr_name = pd.read_sql_query(qry, db)
+tckr_name = tckr_name.loc[0][0]
 
-# st.write("This is a nice country  ", choice_country)
-# st.write("It has exchange:,",choice_exchange)
+# st.write("This is a nice country  ", country_select)
+# st.write("It has exchange:,",exchange_select)
 # st.write(choice_name)
 
 # get start date
@@ -47,35 +50,35 @@ ticker_name = ticker_name.loc[0][0]
 # get end date
 #end_date = st.sidebar.date_input("End Date", value=datetime.date.today())
 #st.write(end_date)
-#st.write(str(ticker_name))
+#st.write(str(tckr_name))
 
 # get interval
-interval = st.sidebar.selectbox("Interval", ['1d', '1wk', '1mo', '3mo'])
+intvl = st.sidebar.selectbox("Select Interval", ['1d', '1wk', '1mo', '3mo'])
 
 #get period
-period = st.sidebar.selectbox("Period",['1mo','3mo','6mo','1y','2y','5y','10y','max'],index = 2)
+prd = st.sidebar.selectbox("Select Period",['1mo','3mo','6mo','1y','2y','5y','10y','max'],index = 2)
 
 # get stock data
-stock = yf.Ticker(str(ticker_name))
-#data = stock.history(interval=interval, start=start_date, end=end_date)
-data = stock.history(interval=interval, period=period)
+stock = yf.Ticker(str(tckr_name))
+#data = stock.history(interval=intvl, start=start_date, end=end_date)
+data = stock.history(interval=intvl, period=prd)
 
 if len(data)==0:
     st.write("Unable to retrieve data.This ticker may no longer be in use. Try some other stock")
 else:
 
     #preprocessing
-    data = preprocessing(data,interval)
+    data = preprocessing(data,intvl)
 
-    if period == '1mo' or period == '3mo':
-        horizon = st.sidebar.slider("Forecast horizon",1,15,5)
+    if prd == '1mo' or prd == '3mo':
+        set_horizon = st.sidebar.slider("Forecast horizon",1,15,5)
     else:
-        if interval == '1d' or interval == '1wk':
-            horizon = st.sidebar.slider("Forecast horizon", 1, 30, 5)
+        if intvl == '1d' or intvl == '1wk':
+            set_horizon = st.sidebar.slider("Forecast horizon", 1, 30, 5)
         else:
-            horizon = st.sidebar.slider("Forecast horizon", 1, 15, 5)
+            set_horizon = st.sidebar.slider("Forecast horizon", 1, 15, 5)
 
-    model = st.selectbox('Model',['Simple Exponential Smoothing','Halt Model','Holt-Winter Model','Auto Regressive Model',
+    model = st.selectbox('Model Selection',['Simple Exponential Smoothing','Halt Model','Holt-Winter Model','Auto Regressive Model',
                                   'Moving Average Model','ARMA Model', 'ARIMA Model','AutoARIMA',
                                   'Linear Regression','Random Forest', 'Gradient Boosting','Support Vector Machines',
                                   ])
@@ -87,7 +90,7 @@ else:
         with col2:
             alpha_low = st.slider("Alpha_low",0.0,1.0,0.25)
         from SES import SES_model
-        data_final, smap_low, smap_high, optim_alpha_high, optim_alpha_low = SES_model(data,horizon,alpha_high,alpha_low)
+        data_final, smap_low, smap_high, optim_alpha_high, optim_alpha_low = SES_model(data,set_horizon,alpha_high,alpha_low)
 
 #data_final
         st.line_chart(data_final[['High','Forecast_High','Low','Forecast_Low']])
@@ -110,7 +113,7 @@ else:
         with col4:
             trend_low = st.slider("Trend Low", 0.0, 1.0, 0.20)
         from SES import Holt_model
-        data_final,smap_low,smap_high,optim_level_high,optim_level_low,optim_trend_high,optim_trend_low = Holt_model(data,horizon
+        data_final,smap_low,smap_high,optim_level_high,optim_level_low,optim_trend_high,optim_trend_low = Holt_model(data,set_horizon
                                                                         ,level_high,level_low,trend_high,trend_low)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
@@ -135,7 +138,7 @@ else:
             trend_low = st.slider("Trend Low", 0.0, 1.0, 0.20)
             season_low = st.slider("Seasonal Low", 0.0, 1.0, 0.20)
         from SES import Holt_Winter_Model
-        data_final, smap_low, smap_high, optim_level_high, optim_level_low, optim_trend_high, optim_trend_low, optim_season_high, optim_season_low = Holt_Winter_Model(data,horizon, level_high, level_low,trend_high,trend_low,season_high,season_low)
+        data_final, smap_low, smap_high, optim_level_high, optim_level_low, optim_trend_high, optim_trend_low, optim_season_high, optim_season_low = Holt_Winter_Model(data,set_horizon, level_high, level_low,trend_high,trend_low,season_high,season_low)
 
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
@@ -158,7 +161,7 @@ else:
             p_low = st.slider("Order of Low", 1, 30, 1)
         from SES import AR_model
 
-        data_final, smap_high, smap_low = AR_model(data,horizon,p_high,p_low)
+        data_final, smap_high, smap_low = AR_model(data,set_horizon,p_high,p_low)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
         with col1:
@@ -173,7 +176,7 @@ else:
         with col2:
             q_low = st.slider("Order of Low", 1, 30, 1)
         from SES import AR_model
-        data_final, smap_high, smap_low = AR_model(data, horizon, q_high, q_low)
+        data_final, smap_high, smap_low = AR_model(data, set_horizon, q_high, q_low)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
         with col1:
@@ -190,7 +193,7 @@ else:
             p_low = st.slider("Order of AR Low", 1, 30, 1)
             q_low = st.slider("Order of MA Low", 1, 30, 1)
         from SES import ARMA_model
-        data_final, smap_high, smap_low = ARMA_model(data,horizon,p_high,p_low,q_high,q_low)
+        data_final, smap_high, smap_low = ARMA_model(data,set_horizon,p_high,p_low,q_high,q_low)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
         with col1:
@@ -209,7 +212,7 @@ else:
             q_low = st.slider("Order of MA Low", 1, 30, 1)
             i_low = st.slider("Order of Differencing Low", 0, 10, 0)
         from SES import ARIMA_model
-        data_final, smap_high, smap_low = ARIMA_model(data,horizon,p_high,p_low,q_high,q_low,i_high,i_low)
+        data_final, smap_high, smap_low = ARIMA_model(data,set_horizon,p_high,p_low,q_high,q_low,i_high,i_low)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
         col1, col2 = st.columns(2)
         with col1:
@@ -219,13 +222,13 @@ else:
     elif model == 'AutoARIMA':
         from SES import Auto_Arima
         st.write("Note: This model may take some time to fit")
-        data_final = Auto_Arima(data,horizon)
+        data_final = Auto_Arima(data,set_horizon)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
 
     else:
         from ML_models import forecast
-        #data_final = forecast(data,horizon,model)
-        data_final, smape_high, smape_low = forecast(data,horizon,model)
+        #data_final = forecast(data,set_horizon,model)
+        data_final, smape_high, smape_low = forecast(data,set_horizon,model)
         st.line_chart(data_final[['High', 'Forecast_High', 'Low', 'Forecast_Low']])
 
         col1, col2 = st.columns(2)
