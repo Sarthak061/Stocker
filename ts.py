@@ -238,3 +238,4 @@ else:
             st.write("SMAPE of Low : {}".format(smape_low))
 dtaa = yf.download(stock, start="2010-01-01", end="2022-01-01", period = prd)
 db.close()
+"You can find the data of the above ticker [here](https://finance.yahoo.com/)."
