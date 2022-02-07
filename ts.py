@@ -64,17 +64,6 @@ stock = yf.Ticker(str(tckr_name))
 #data = stock.history(interval=intvl, start=start_date, end=end_date)
 data = stock.history(interval=intvl, period=prd)
 
-period1 = int(time.mktime(datetime.datetime(2011, 1, 1, 23, 59).timetuple()))
-period2 = int(time.mktime(datetime.datetime(2022, 1, 1, 23, 59).timetuple()))
-
-xlwriter = pd.ExcelWriter('historical prices.xlsx', engine='openpyxl')
-for ticker in tckr_name:
-    query_string = f'https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1={period1}&period2={period2}&interval={interval}&events=history&includeAdjustedClose=true'
-    df = pd.read_csv(query_string)
-    df.to_excel(xlwriter, sheet_name=ticker, index=False)
-
-xlwriter.save()
-
 if len(data)==0:
     st.write("Unable to retrieve data.This ticker may no longer be in use. Try some other stock")
 else:
