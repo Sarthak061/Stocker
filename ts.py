@@ -4,6 +4,7 @@ import sqlite3 as sq
 import datetime
 import yfinance as yf
 from preprocess import preprocessing
+import time
 #import matplotlib as mpl
 #import matplotlib.pyplot as plt
 import warnings
