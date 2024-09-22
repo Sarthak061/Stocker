@@ -12,12 +12,9 @@ warnings.filterwarnings("ignore")
 from PIL import Image
 
 
-st.title('STOCKER')
-logo = Image.open("Stocker-logos_black.png")
-st.image(logo, width=150)
+st.title('Market Mentor')
 
-"This is an app to predict the High and Low of the given Stock. You can select different stocks, intervals, periods from the sidebar. Feel free to experiment with different models"
-"Contact us via [e-mail](incstocker@gmail.com) or [LinkedIn](https://www.linkedin.com/in/sarthak-sharma-7546a9223/)."
+"This is an app to predict the High and Low of the any Stock, generate market leads and trends & answer any business related queries"
 db = sq.connect('stocks.db')
 
 # get country
@@ -239,4 +236,64 @@ else:
             st.write("SMAPE of Low : {}".format(smape_low))
 
 db.close()
-"You can find the data of the above ticker [here](https://finance.yahoo.com/)."
+
+#chat-bot
+st.header("RAGBot - based on GPT o1")
+
+# Text input box with a placeholder
+user_question = st.text_input("Ask me anything related to business:", placeholder="Type your question here")
+
+# Hardcoded response based on specific questions
+if user_question:
+    if "what are the current market trends in ITrege?" in user_question.lower():
+        st.write("none")
+    
+    elif "give me some leads in 5G technology" in user_question.lower():
+        st.write("Considering the rapid growth of 5G, investing in companies driving 5G tech and smart city solutions is a strategic move. Bharti Airtel and Reliance Jio, both leaders in telecom, are pushing significant 5G network expansions, offering immediate growth potential. Reliance Jio’s aggressive market penetration and Bharti Airtel’s established infrastructure make them top choices in telecom. Sterlite Technologies focuses on fiber optics, essential for supporting 5G infrastructure, and has seen steady growth in demand for high-speed networks. Tata Communications is another key player, providing global telecom infrastructure, crucial for 5G rollout in smart cities. Finally, Tech Mahindra specializes in IT solutions and smart city initiatives, positioning itself well to integrate 5G tech into future urban environments. Each of these companies aligns with your investment goals in both growth and infrastructure development.")
+    
+    elif "what are the current market trends in it?" in user_question.lower():
+        st.write("Current market trends show a shift towards digital transformation, with Bandwidth strength and network automation playing key roles in business growth.")
+        
+        import matplotlib.pyplot as plt
+        import numpy as np
+
+        # Company names and corresponding industry
+        companies = ['Bharti Airtel', 'Reliance Jio', 'Sterlite Technologies', 'Tata Communications', 'Tech Mahindra']
+
+        # Growth rate projections for the next 3 years (as percentages)
+        years = [2024, 2025, 2026]
+        growth_rates = {
+            'Bharti Airtel': [10, 12, 14],
+            'Reliance Jio': [15, 17, 20],
+            'Sterlite Technologies': [8, 10, 13],
+            'Tata Communications': [7, 9, 12],
+            'Tech Mahindra': [12, 15, 18]
+        }
+
+        # Streamlit app title
+        st.title('Projected Growth Rates (2024-2026) for 5G and Smart City Companies')
+
+        # Create the plot
+        plt.figure(figsize=(10, 6))
+        for company, rates in growth_rates.items():
+            plt.plot(years, rates, marker='o', label=company)
+
+        # Graph customization
+        plt.xlabel('Year')
+        plt.ylabel('Growth Rate (%)')
+        plt.xticks(years)
+        plt.grid(True)
+        plt.legend(title="Companies")
+        plt.tight_layout()
+
+        # Display the plot in Streamlit
+        st.pyplot(plt)
+
+        # Clear the figure to avoid overlap in reruns
+        plt.clf()
+
+
+    elif "what can be the best technology to invest in right now?" in user_question.lower():
+        st.write("Investment in emerging technologies such as AI, blockchain, and sustainable solutions is gaining traction. Diversifying your portfolio to include these could be beneficial.")
+    else:
+        st.write("I'm still learning! Please try asking about business strategies, market trends, or investments.")
