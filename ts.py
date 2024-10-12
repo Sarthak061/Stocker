@@ -5,6 +5,7 @@ import datetime
 import yfinance as yf
 from preprocess import preprocessing
 import time
+import google.generativeai as genai
 #import matplotlib as mpl
 #import matplotlib.pyplot as plt
 import warnings
@@ -237,63 +238,47 @@ else:
 
 db.close()
 
-#chat-bot
-st.header("RAGBot - based on GPT o1")
 
-# Text input box with a placeholder
-user_question = st.text_input("Ask me anything related to business:", placeholder="Type your question here")
+import streamlit as st
+import google.generativeai as genai
+from PIL import Image
+import io
+import base64
 
-# Hardcoded response based on specific questions
-if user_question:
-    if "what are the current market trends in ITrege?" in user_question.lower():
-        st.write("none")
-    
-    elif "give me some leads in 5G technology" in user_question.lower():
-        st.write("Considering the rapid growth of 5G, investing in companies driving 5G tech and smart city solutions is a strategic move. Bharti Airtel and Reliance Jio, both leaders in telecom, are pushing significant 5G network expansions, offering immediate growth potential. Reliance Jio’s aggressive market penetration and Bharti Airtel’s established infrastructure make them top choices in telecom. Sterlite Technologies focuses on fiber optics, essential for supporting 5G infrastructure, and has seen steady growth in demand for high-speed networks. Tata Communications is another key player, providing global telecom infrastructure, crucial for 5G rollout in smart cities. Finally, Tech Mahindra specializes in IT solutions and smart city initiatives, positioning itself well to integrate 5G tech into future urban environments. Each of these companies aligns with your investment goals in both growth and infrastructure development.")
-    
-    elif "what are the current market trends in it?" in user_question.lower():
-        st.write("Current market trends show a shift towards digital transformation, with Bandwidth strength and network automation playing key roles in business growth.")
-        
-        import matplotlib.pyplot as plt
-        import numpy as np
+st.header("RAGBot")
 
-        # Company names and corresponding industry
-        companies = ['Bharti Airtel', 'Reliance Jio', 'Sterlite Technologies', 'Tata Communications', 'Tech Mahindra']
+api_key = st.secrets["google_api_key"]
 
-        # Growth rate projections for the next 3 years (as percentages)
-        years = [2024, 2025, 2026]
-        growth_rates = {
-            'Bharti Airtel': [10, 12, 14],
-            'Reliance Jio': [15, 17, 20],
-            'Sterlite Technologies': [8, 10, 13],
-            'Tata Communications': [7, 9, 12],
-            'Tech Mahindra': [12, 15, 18]
-        }
+if api_key:
+    genai.configure(api_key=api_key)
 
-        # Streamlit app title
-        st.title('Projected Growth Rates (2024-2026) for 5G and Smart City Companies')
+    prompt = st.text_input("What's your query?", "How should I invest in the stock market?")
 
-        # Create the plot
-        plt.figure(figsize=(10, 6))
-        for company, rates in growth_rates.items():
-            plt.plot(years, rates, marker='o', label=company)
+    if st.button("Generate Response"):
+        try:
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(prompt)
 
-        # Graph customization
-        plt.xlabel('Year')
-        plt.ylabel('Growth Rate (%)')
-        plt.xticks(years)
-        plt.grid(True)
-        plt.legend(title="Companies")
-        plt.tight_layout()
+            if hasattr(response, 'text') and response.text:
+                st.subheader("Generated Response")
+                st.write(response.text)
 
-        # Display the plot in Streamlit
-        st.pyplot(plt)
+            if hasattr(response, 'images') and response.images:
+                st.subheader("Generated Images")
+                
+                for image_data in response.images:
+                    if 'data' in image_data: 
+                        img_bytes = base64.b64decode(image_data['data'])
+                    elif 'raw_data' in image_data:
+                        img_bytes = image_data['raw_data']
+                    else:
+                        continue 
 
-        # Clear the figure to avoid overlap in reruns
-        plt.clf()
+                    image = Image.open(io.BytesIO(img_bytes))
 
+                    st.image(image, caption="Generated Image", use_column_width=True)
 
-    elif "what can be the best technology to invest in right now?" in user_question.lower():
-        st.write("Investment in emerging technologies such as AI, blockchain, and sustainable solutions is gaining traction. Diversifying your portfolio to include these could be beneficial.")
-    else:
-        st.write("I'm still learning! Please try asking about business strategies, market trends, or investments.")
+        except Exception as e:
+            st.error(f"Error: {e}")
+else:
+    st.warning("API key is missing. Please add your API key to secrets.")
