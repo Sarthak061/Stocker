@@ -2,6 +2,7 @@ numpy
 pandas
 datetime
 sktime
+google-generativeai
 scikit-learn
 statsmodels
 pmdarima
